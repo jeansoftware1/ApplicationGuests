@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_all_guest"
+            android:icon="@drawable/baseline_emoji_people_24"
+            android:title="@string/all_guests" />
+        <item
+            android:id="@+id/nav_all_presents"
+            android:icon="@drawable/baseline_how_to_reg_24"
+            android:title="@string/all_presents" />
+        <item
+            android:id="@+id/nav_all_absents"
+            android:icon="@drawable/baseline_mood_bad_24"
+            android:title="@string/all_absents" />
+    </group>
+</menu>

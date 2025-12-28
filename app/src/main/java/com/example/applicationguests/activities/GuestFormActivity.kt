@@ -1,0 +1,84 @@
+package com.example.applicationguests.activities
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.example.applicationguests.R
+import com.example.applicationguests.constants.DataBaseConstants
+import com.example.applicationguests.databinding.ActivityGuestFormBinding
+import com.example.applicationguests.repository.GuestData
+import com.example.applicationguests.viewmodel.GuestFormViewModel
+
+class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
+
+    private lateinit var binding: ActivityGuestFormBinding
+    private lateinit var viewModel: GuestFormViewModel
+    private var guestId = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityGuestFormBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this).get(GuestFormViewModel::class.java)
+
+
+        // Eventos
+        setListeners()
+
+        // Cria observadores
+        observe()
+
+        // Carrega dados do usuário, caso haja
+        loadData()
+
+        // Default
+        binding.radioPresent.isChecked = true
+    }
+
+
+    override fun onClick(v: View) {
+        val id = v.id
+        if (id == R.id.button_finish) {
+            val name = binding.editName.text.toString()
+            val presence = binding.radioPresent.isChecked
+
+            viewModel.save(guestId, name, presence)
+        }
+    }
+
+    private fun loadData() {
+        val bundle = intent.extras
+        if (bundle != null) {
+            guestId = bundle.getInt(DataBaseConstants.GUEST.NEW_ID)
+            viewModel.load(guestId)
+        }
+    }
+
+    private fun observe() {
+        viewModel.saveGuest.observe(this, Observer {
+            if (it) {
+                Toast.makeText(applicationContext, "Sucess!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(applicationContext, "Failed!", Toast.LENGTH_SHORT).show()
+            }
+            finish()
+        })
+
+        viewModel.guest.observe(this, Observer {
+            binding.editName.setText(it.name)
+            if (it.presence) {
+                binding.radioPresent.isChecked = true
+            } else {
+                binding.radioAbsent.isChecked = true
+            }
+        })
+    }
+
+    private fun setListeners() {
+        binding.buttonFinish.setOnClickListener(this)
+    }
+}
